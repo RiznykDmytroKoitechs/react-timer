@@ -12,7 +12,7 @@ export default function Timer() {
     if (isEnabled) {
       const interval = setTimeout(() => {
         setTime(time + 1);
-      }, 5);
+      }, 1000);
       return () => {
         clearTimeout(interval);
       };
