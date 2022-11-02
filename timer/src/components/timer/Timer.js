@@ -1,54 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function Timer() {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [time, setTime] = useState(0);
-
-  const hours = Math.floor((time % (3600 * 60)) / 3600);
-  const minutes = Math.floor((time % 3600) / 60);
-  const seconds = time % 60;
+  const timerValRef = useRef(0);
+  const textRef = useRef();
+  const timerRef = useRef(null);
+  const startButtonRef = useRef();
+  const stopButtonRef = useRef();
+  const resetButtonRef = useRef();
 
   useEffect(() => {
-    if (isEnabled) {
-      const interval = setTimeout(() => {
-        setTime(time + 1);
-      }, 1000);
-      return () => {
-        clearTimeout(interval);
-      };
-    }
-  }, [isEnabled, time]);
+    stopButtonRef.current.disabled = true;
+    resetButtonRef.current.disabled = true;
+    return () => clearInterval(timerRef.current);
+  }, []);
+
+  const startTimer = () => {
+    clearInterval(timerRef.curren);
+    startButtonRef.current.disabled = true;
+    stopButtonRef.current.disabled = false;
+    timerRef.current = setInterval(() => {
+      timerValRef.current += 1;
+      const hours = Math.floor((timerValRef.current % (3600 * 60)) / 3600);
+      const minutes = Math.floor((timerValRef.current % 3600) / 60);
+      const seconds = timerValRef.current % 60;
+      textRef.current.textContent = `${("0" + hours).slice(-2)}:${(
+        "0" + minutes
+      ).slice(-2)}:${("0" + seconds).slice(-2)}`;
+      resetButtonRef.current.disabled = false;
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    startButtonRef.current.disabled = false;
+    stopButtonRef.current.disabled = true;
+    clearInterval(timerRef.current);
+    console.log(timerRef.current);
+  };
+
+  const resetTimer = () => {
+    resetButtonRef.current.disabled = true;
+    timerValRef.current = 0;
+    textRef.current.textContent = "00:00:00";
+  };
 
   return (
     <div className="timerDiv">
-      <h1>
-        {("0" + hours).slice(-2)}:
-        {("0" + minutes).slice(-2)}:
-        {("0" + seconds).slice(-2)}
-      </h1>
+      <h1 ref={textRef}>00:00:00</h1>
       <div className="buttonsDiv">
-        <button
-          disabled={isEnabled}
-          onClick={() => {
-            setIsEnabled(true);
-          }}
-        >
+        <button ref={startButtonRef} onClick={startTimer}>
           Start
         </button>
-        <button
-          disabled={!isEnabled}
-          onClick={() => {
-            setIsEnabled(false);
-          }}
-        >
+        <button ref={stopButtonRef} onClick={stopTimer}>
           Stop
         </button>
         <button
+          ref={resetButtonRef}
           className="resetButton"
-          disabled={!time}
-          onClick={() => {
-            setTime(0);
-          }}
+          onClick={resetTimer}
         >
           Reset
         </button>
