@@ -22,7 +22,9 @@ export default function Timer() {
   return (
     <div className="timerDiv">
       <h1>
-        {hours}:{minutes}:{seconds}
+        {("0" + hours).slice(-2)}:
+        {("0" + minutes).slice(-2)}:
+        {("0" + seconds).slice(-2)}
       </h1>
       <div className="buttonsDiv">
         <button
